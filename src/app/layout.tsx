@@ -1,13 +1,12 @@
-
-import type {Metadata} from 'next';
+import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
-import { FirebaseClientProvider } from '@/firebase/client-provider';
-import { MaintenanceGate } from '@/components/MaintenanceGate';
+import { FirebaseClientProvider } from "@/firebase/client-provider";
+import { MaintenanceGate } from "@/components/MaintenanceGate";
 
 export const metadata: Metadata = {
-  title: 'The Friends Space | Synchronized Watch Parties',
-  description: 'A cinematic, synchronized watch party platform for you and your friends.',
+  title: 'SyncSpace | Synchronized Watch Parties',
+  description: 'A cinematic, synchronized watch party platform for your community.',
 };
 
 export default function RootLayout({
