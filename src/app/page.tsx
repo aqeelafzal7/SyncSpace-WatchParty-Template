@@ -104,7 +104,7 @@ function UpcomingEventsList({ user }: { user: User }) {
                   Scheduled
                 </div>
               </div>
-              
+
               <div>
                 <h4 className="text-lg font-bold truncate mb-1">{room.roomName}</h4>
                 <p className="text-xs text-muted-foreground">Hosted by {room.hostName}</p>
@@ -120,7 +120,6 @@ function UpcomingEventsList({ user }: { user: User }) {
                   {formattedTime}
                 </div>
               </div>
-
               <Button asChild className="w-full mt-4 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold h-11 group">
                 <Link href={`/room/${room.id}`}>
                   Enter Waiting Room
@@ -218,7 +217,7 @@ function AuthenticatedDashboard({ user, userRole }: { user: User, userRole: stri
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-2">
             <MonitorPlay className="w-6 h-6 text-accent" />
-            <span className="font-black uppercase tracking-tighter text-white">The <span className="text-accent">Friends</span> Space</span>
+            <span className="font-black uppercase tracking-tighter text-white">Sync<span className="text-accent">Space</span></span>
           </div>
           <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(false)} className="rounded-full hover:bg-white/5 text-muted-foreground hover:text-white">
             <X className="w-5 h-5" />
@@ -253,8 +252,7 @@ function AuthenticatedDashboard({ user, userRole }: { user: User, userRole: stri
           </Button>
         </div>
       </aside>
-
-      {/* Hamburger Menu */}
+                {/* Hamburger Menu */}
       <div className="absolute top-6 left-6 z-50">
         <Button 
           variant="ghost" 
@@ -348,8 +346,7 @@ function AuthenticatedDashboard({ user, userRole }: { user: User, userRole: stri
            </Link>
         </div>
       </div>
-
-      {/* User Settings Modal */}
+              {/* User Settings Modal */}
       <Dialog open={isSettingsModalOpen} onOpenChange={setIsSettingsModalOpen}>
         <DialogContent className="max-w-md glass-morphism border-none text-white p-6 shadow-2xl animate-in fade-in zoom-in-95">
           <DialogHeader className="text-center space-y-2 mb-4">
@@ -490,7 +487,7 @@ export default function Home() {
                   <MonitorPlay className="w-12 h-12 md:w-14 md:h-14 text-accent" />
                 </div>
                 <h1 className="text-5xl md:text-7xl font-headline font-black text-white tracking-tighter uppercase leading-none">
-                  THE <span className="text-accent">FRIENDS</span> SPACE
+                  SYNC<span className="text-accent">SPACE</span>
                 </h1>
                 <p className="text-muted-foreground text-lg md:text-xl font-medium max-w-md mx-auto">
                   Sync your screen, share the moment. The ultimate destination for virtual watch parties.
@@ -505,13 +502,13 @@ export default function Home() {
 
         <footer className="mt-auto w-full pb-8 pt-12 flex flex-col items-center animate-fade-in delay-700">
           <p className="text-sm text-muted-foreground/60 font-bold mb-6 uppercase tracking-[0.2em] text-center">
-            ✨ Built by M Aqeel Afzal | Let's Connect!
+            ✨ Powered by SyncSpace Template
           </p>
           <div className="flex justify-center items-center gap-10">
-            <a href="https://www.instagram.com/m_aqeel.afzal" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/40 hover:text-white transition-all transform hover:scale-125"><Instagram className="w-7 h-7" /></a>
-            <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/40 hover:text-white transition-all transform hover:scale-125"><Facebook className="w-7 h-7" /></a>
-            <a href="https://wa.me/923051324607" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/40 hover:text-white transition-all transform hover:scale-125"><MessageCircle className="w-7 h-7" /></a>
-            <a href="#" target="_blank" rel="noopener noreferrer" className="text-muted-foreground/40 hover:text-white transition-all transform hover:scale-125">
+            <a href="#" className="text-muted-foreground/40 hover:text-white transition-all transform hover:scale-125"><Instagram className="w-7 h-7" /></a>
+            <a href="#" className="text-muted-foreground/40 hover:text-white transition-all transform hover:scale-125"><Facebook className="w-7 h-7" /></a>
+            <a href="#" className="text-muted-foreground/40 hover:text-white transition-all transform hover:scale-125"><MessageCircle className="w-7 h-7" /></a>
+            <a href="#" className="text-muted-foreground/40 hover:text-white transition-all transform hover:scale-125">
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 opacity-70 hover:opacity-100 transition-opacity"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1.04-.1z"/></svg>
             </a>
           </div>
@@ -522,4 +519,4 @@ export default function Home() {
       <div className="fixed bottom-0 -right-1/4 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[150px] pointer-events-none" />
     </div>
   );
-}
+                                         }
