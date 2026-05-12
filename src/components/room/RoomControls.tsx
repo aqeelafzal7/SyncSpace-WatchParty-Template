@@ -13,9 +13,10 @@ interface RoomControlsProps {
   isHost: boolean;
   roomData: any;
   onOpenSettings: () => void;
+  onSync: () => void;
 }
 
-export function RoomControls({ roomId, isHost, roomData, onOpenSettings }: RoomControlsProps) {
+export function RoomControls({ roomId, isHost, roomData, onOpenSettings, onSync }: RoomControlsProps) {
   const [isCopied, setIsCopied] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { toast } = useToast();
@@ -39,6 +40,7 @@ export function RoomControls({ roomId, isHost, roomData, onOpenSettings }: RoomC
 
   const handleRefreshData = () => {
     setIsRefreshing(true);
+    onSync(); // Sends the manual sync signal to the Video Player
     setTimeout(() => {
       setIsRefreshing(false);
       toast({ title: "Video Synced", description: "Synchronized with host!" });
@@ -47,7 +49,6 @@ export function RoomControls({ roomId, isHost, roomData, onOpenSettings }: RoomC
 
   return (
     <div className="flex items-center justify-between gap-4 w-full px-4 pb-4">
-      {/* Left: Info & Drawer Toggle */}
       <div className="flex items-center gap-3 min-w-0">
         <Button 
           variant="ghost" 
@@ -65,7 +66,6 @@ export function RoomControls({ roomId, isHost, roomData, onOpenSettings }: RoomC
         </div>
       </div>
 
-      {/* Center: Playback Controls */}
       <div className="flex items-center gap-2 bg-white/5 p-1 rounded-2xl border border-white/10 shrink-0">
         {isHost && (
           <div className="flex items-center gap-1">
@@ -97,4 +97,4 @@ export function RoomControls({ roomId, isHost, roomData, onOpenSettings }: RoomC
       </div>
     </div>
   );
-}
+        }
