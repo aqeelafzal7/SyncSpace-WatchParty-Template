@@ -1,0 +1,10 @@
+{
+  "placeholderImages": [
+    {
+      "id": "landing-bg",
+      "description": "A cinematic dark theater background with subtle purple lighting",
+      "imageUrl": "https://picsum.photos/seed/friends-space/1920/1080",
+      "imageHint": "cinematic theater"
+    }
+  ]
+}

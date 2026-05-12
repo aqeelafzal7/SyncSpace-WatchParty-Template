@@ -1,0 +1,269 @@
+
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a registered user profile in the system.",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The unique Firebase Authentication UID of the user."
+        },
+        "name": {
+          "type": "string",
+          "description": "The user's chosen display name."
+        },
+        "email": {
+          "type": "string",
+          "description": "The user's registered email address."
+        },
+        "role": {
+          "type": "string",
+          "description": "The user's role in the application.",
+          "enum": ["user", "admin"]
+        },
+        "hasSetCustomName": {
+          "type": "boolean",
+          "description": "Indicates if the user has completed their onboarding profile setup."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the profile was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "uid",
+        "name",
+        "email"
+      ]
+    },
+    "Room": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Room",
+      "type": "object",
+      "description": "Represents a synchronized watch party room where users can watch videos together and chat in real-time.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Room entity."
+        },
+        "videoUrl": {
+          "type": "string",
+          "description": "The URL of the video being watched in the room. This can be a YouTube URL or a direct link to an .mp4 file."
+        },
+        "hostName": {
+          "type": "string",
+          "description": "The display name of the user who created and is currently hosting the room. This user has control over video playback."
+        },
+        "roomName": {
+          "type": "string",
+          "description": "An optional user-defined name for the watch party room."
+        },
+        "password": {
+          "type": "string",
+          "description": "An optional password required for users to join the room. This adds a layer of privacy to the room."
+        },
+        "guests": {
+          "type": "array",
+          "description": "A list of display names of users currently participating in the room, excluding the host.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allTimeMembers": {
+          "type": "array",
+          "description": "A permanent record of all users who ever joined this room.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string",
+          "description": "The current lifecycle status of the room (active, ended).",
+          "enum": ["active", "ended"]
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "The timestamp when the room was created.",
+          "format": "date-time"
+        },
+        "endedAt": {
+          "type": "string",
+          "description": "The timestamp when the room was ended by the host.",
+          "format": "date-time"
+        },
+        "videoStateStatus": {
+          "type": "string",
+          "description": "The current playback status of the video in the room (e.g., 'playing', 'paused', 'stopped'). Controlled by the host."
+        },
+        "videoStateTimestamp": {
+          "type": "number",
+          "description": "The current playback position of the video in seconds, synchronized across all participants."
+        },
+        "videoStateUpdatedAt": {
+          "type": "string",
+          "description": "The timestamp when the video state (status or timestamp) was last updated by the host. Used for synchronization logic.",
+          "format": "date-time"
+        },
+        "isScheduled": {
+          "type": "boolean",
+          "description": "Indicates if this room is scheduled for a future time."
+        },
+        "startTime": {
+          "type": "string",
+          "description": "The scheduled start time for the watch party.",
+          "format": "date-time"
+        },
+        "notifyList": {
+          "type": "array",
+          "description": "List of user UIDs who wish to be notified when this session starts.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "videoUrl",
+        "hostName",
+        "guests",
+        "createdAt",
+        "videoStateStatus",
+        "videoStateTimestamp",
+        "videoStateUpdatedAt"
+      ]
+    },
+    "Message": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Message",
+      "type": "object",
+      "description": "Represents a single chat message sent by a user within a specific watch party room.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Message entity."
+        },
+        "roomId": {
+          "type": "string",
+          "description": "Reference to the Room where this message was sent. (Relationship: Room 1:N Message)"
+        },
+        "senderName": {
+          "type": "string",
+          "description": "The display name of the user who sent the message."
+        },
+        "text": {
+          "type": "string",
+          "description": "The content of the chat message."
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "The timestamp when the message was sent, used for ordering messages.",
+          "format": "date-time"
+        },
+        "replyTo": {
+          "type": "object",
+          "description": "Reference to another message being replied to.",
+          "properties": {
+            "id": { "type": "string" },
+            "text": { "type": "string" },
+            "senderName": { "type": "string" }
+          }
+        }
+      },
+      "required": [
+        "id",
+        "roomId",
+        "senderName",
+        "text",
+        "timestamp"
+      ]
+    },
+    "SystemSettings": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "SystemSettings",
+      "type": "object",
+      "description": "Global application configuration settings.",
+      "properties": {
+        "isMaintenance": {
+          "type": "boolean",
+          "description": "Toggles global maintenance mode."
+        },
+        "maintenanceMessage": {
+          "type": "string",
+          "description": "Custom message to display during maintenance."
+        }
+      }
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "google",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profile and account information."
+        }
+      },
+      {
+        "path": "/rooms/{roomId}",
+        "definition": {
+          "entityName": "Room",
+          "schema": {
+            "$ref": "#/backend/entities/Room"
+          },
+          "description": "Represents a synchronized watch party room. This document contains the video state, current host (by UID), and a map of all participant UIDs with their roles (host/guest) for authorization.",
+          "params": [
+            {
+              "name": "roomId",
+              "description": "The unique identifier for the watch party room."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/rooms/{roomId}/messages/{messageId}",
+        "definition": {
+          "entityName": "Message",
+          "schema": {
+            "$ref": "#/backend/entities/Message"
+          },
+          "description": "Represents a single chat message within a specific watch party room. Each message includes the sender's UID ('senderId') for authentication.",
+          "params": [
+            {
+              "name": "roomId",
+              "description": "The unique identifier of the parent room to which this message belongs."
+            },
+            {
+              "name": "messageId",
+              "description": "The unique identifier for the chat message."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/settings/system",
+        "definition": {
+          "entityName": "SystemSettings",
+          "schema": {
+            "$ref": "#/backend/entities/SystemSettings"
+          },
+          "description": "Global system settings, including maintenance mode status."
+        }
+      }
+    ],
+    "reasoning": "The structure prioritizes Authorization Independence and real-time synchronization. User profiles are segregated in a top-level collection, while rooms and their associated messages maintain local authorization context for efficient security rules evaluation."
+  }
+}
