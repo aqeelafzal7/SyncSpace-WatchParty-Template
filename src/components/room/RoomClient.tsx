@@ -10,33 +10,24 @@ import { ChatSidebar } from './ChatSidebar';
 import { RoomControls } from './RoomControls';
 import { 
   Loader2, 
-  AlertCircle, 
   Users, 
   LogIn, 
   Home, 
   Lock, 
   Trophy, 
   Clock, 
-  Sparkles, 
-  Bell, 
-  CalendarClock,
   X,
   Settings,
   LogOut,
   Trash2,
   MonitorPlay,
-  Link as LinkIcon,
   ShieldAlert,
-  KeyRound,
-  MessageCircle
+  KeyRound
 } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
 import { useToast } from '@/hooks/use-toast';
 import { updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
@@ -55,7 +46,6 @@ export function RoomClient({ roomId }: RoomClientProps) {
   const [displayName, setDisplayName] = useState("");
   const [localUserId, setLocalUserId] = useState("");
   const [userRole, setUserRole] = useState("user");
-  const [joinNameInput, setJoinNameInput] = useState("");
   const [joinPasswordInput, setJoinPasswordInput] = useState("");
   const [isPasswordVerified, setIsPasswordVerified] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
@@ -63,10 +53,12 @@ export function RoomClient({ roomId }: RoomClientProps) {
   const [isJoiningLoading, setIsJoiningLoading] = useState(false);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [joinError, setJoinError] = useState<string | null>(null);
-  const [timeLeft, setTimeLeft] = useState<{ days: number, hours: number, minutes: number, seconds: number } | null>(null);
   const [isWaitingRoom, setIsWaitingRoom] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [newVideoUrl, setNewVideoUrl] = useState('');
+  
+  // RESTORED SYNC STATE
+  const [syncCount, setSyncCount] = useState(0);
   
   const hasAnnouncedJoin = useRef(false);
   const hasAnnouncedFinish = useRef(false);
@@ -86,7 +78,6 @@ export function RoomClient({ roomId }: RoomClientProps) {
       if (user && user.emailVerified) {
         setLocalUserId(user.uid);
         setDisplayName(user.displayName || 'Friend');
-        setJoinNameInput(user.displayName || 'Friend');
         
         try {
           const userDoc = await getDoc(doc(firestore, 'users', user.uid));
@@ -138,17 +129,10 @@ export function RoomClient({ roomId }: RoomClientProps) {
           hasAnnouncedFinish.current = true;
         }
         setIsWaitingRoom(false);
-        setTimeLeft(null);
         return true; 
       }
 
       setIsWaitingRoom(true);
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((difference / 1000 / 60) % 60);
-      const seconds = Math.floor((difference / 1000) % 60);
-
-      setTimeLeft({ days, hours, minutes, seconds });
       return false;
     };
 
@@ -499,10 +483,31 @@ export function RoomClient({ roomId }: RoomClientProps) {
         {/* Video Column */}
         <div className="flex-1 flex flex-col min-h-0 overflow-y-auto lg:overflow-hidden bg-black relative">
           <div className="flex-1 w-full max-w-6xl mx-auto flex flex-col justify-center">
-            {roomData && <VideoPlayer roomData={roomData} roomId={roomId} isHost={hasControl} />}
+            {/* PROPS RESTORED HERE */}
+            {roomData && roomRef && (
+              <VideoPlayer 
+                videoUrl={roomData.videoUrl || ''}
+                videoState={{
+                  status: roomData.videoStateStatus || 'paused',
+                  timestamp: roomData.videoStateTimestamp || 0,
+                  updatedAt: roomData.videoStateUpdatedAt || null
+                }}
+                isHost={hasControl}
+                roomRef={roomRef}
+                syncCount={syncCount}
+              />
+            )}
           </div>
-          {/* Passed onOpenSettings to RoomControls */}
-          {roomData && <RoomControls roomId={roomId} roomData={roomData} isHost={hasControl} onOpenSettings={() => setIsSidebarOpen(true)} />}
+          {/* SYNC COMMAND RESTORED HERE */}
+          {roomData && (
+            <RoomControls 
+              roomId={roomId} 
+              roomData={roomData} 
+              isHost={hasControl} 
+              onOpenSettings={() => setIsSidebarOpen(true)} 
+              onSync={() => setSyncCount(prev => prev + 1)}
+            />
+          )}
         </div>
 
         {/* Chat Column */}
